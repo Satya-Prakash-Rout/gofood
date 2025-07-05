@@ -43,12 +43,16 @@ export default function Login() {
         }
       } else {
         alert("✅ Login successful!");
+        localStorage.setItem("authToken",json.authToken)// Optionally redirect or save auth token
+        localStorage.getItem("authToken");//debug
         navigate('/'); // redirect to home page
-        // Optionally redirect or save auth token
+     
+       
       }
 
     } catch (err) {
       console.error("Login error:", err);
+      
       alert("❌ Server error. Please try again later.");
     }
   };
