@@ -36,6 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+/*for login and signup*/
 .gradient-custom-3 {
 /* fallback for old browsers */
 background: #84fab0;

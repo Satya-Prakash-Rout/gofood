@@ -1,20 +1,17 @@
+//index.js
 const express = require('express');
 const app = express();
 const port = 5000;
 const mongoDB = require('./db');
-
+const cors = require('cors');
 
 // Connect to MongoDB
 mongoDB();
 
-const cors = require('cors');
-app.use(cors());
-
-
 
 
 const corsOptions = {
-  origin: 'http://localhost:3000', // ✅ match your React app's URL
+  origin: 'http://localhost:3000',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -33,6 +30,8 @@ app.use('/api', require('./Routes/CreateUser'));  //  app.use('/api/', ...): Tel
 
 
 app.use('/api', require('./Routes/LoginUser')); //for login
+
+app.use('/api', require('./Routes/DisplayData')); // display data
 
 // Root Route
 app.get('/', (req, res) => {
