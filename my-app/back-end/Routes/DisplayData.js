@@ -1,15 +1,14 @@
-//DisplayData.js
 const express = require('express');
 const router = express.Router();
 
 router.post('/foodData', (req, res) => {
   try {
     if (!(global.food_items && global.foodCategory)) {
-      throw new Error("food_items is not defined");
+      throw new Error("food_items or foodCategory is not defined");
     }
 
-    console.log(global.food_items);
-    res.status(200).send(global.food_items,global.foodCategory);
+    res.status(200).json([global.food_items, global.foodCategory]);
+
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error!");
@@ -17,6 +16,3 @@ router.post('/foodData', (req, res) => {
 });
 
 module.exports = router;
-
-
-
