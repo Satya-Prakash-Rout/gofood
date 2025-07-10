@@ -1,8 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 
 
 export default function Navbar() {
+
+    const navigate =useNavigate();
+    const handlelogout = ()=>{
+        localStorage.removeItem("authToken");
+        navigate("/login")
+
+    }
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-dark bg-success">
@@ -15,16 +22,28 @@ export default function Navbar() {
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <Link className="nav-link" to="/">Home</Link>
+                                <Link className="nav-link active" to="/">Home</Link>
                             </li>
+                            {(localStorage.getItem("authToken"))?
                             <li className="nav-item">
-                                <Link className="nav-link" to="/login">Login</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/createuser">SignUp</Link>
-                            </li>
+                                <Link className="nav-link active" to="/">my Orders</Link>
+                            </li> :""}
+                           
                             
                         </ul>
+                        {(!localStorage.getItem("authToken"))?
+                        <div className='d-flex'>
+                             
+                            <Link className="btn bg-white text-success mx-1" to="/login">Login</Link>
+                            <Link className="btn bg-white text-success mx-1" to="/createuser">SignUp</Link>
+                           
+                        </div>
+                        :
+                        <>
+                        <div className='btn bg-white text-success mx-2'>My Cart</div>
+                        <div className='btn bg-white text-danger mx-2' onClick={handlelogout}>Logout</div>
+                        </>
+                        }
 
                        
                     </div>
