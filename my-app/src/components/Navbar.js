@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link,useNavigate } from 'react-router-dom';
-
+import { Badge } from 'react-bootstrap';
 
 export default function Navbar() {
 
@@ -10,6 +10,15 @@ export default function Navbar() {
         navigate("/login")
 
     }
+     const handleCart = () => {
+     if (localStorage.getItem("authToken")) {
+      navigate("/Cart");
+      } else {
+      // Optional: Redirect to login or show a message
+      alert("Please log in to access your cart.");
+     }
+    };
+
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-dark bg-success">
@@ -40,7 +49,10 @@ export default function Navbar() {
                         </div>
                         :
                         <>
-                        <div className='btn bg-white text-success mx-2'>My Cart</div>
+                        <div className='btn bg-white text-success mx-2' onClick={handleCart}>
+                            My Cart {" "}
+                            <Badge pill bg='danger'>2</Badge>
+                        </div>
                         <div className='btn bg-white text-danger mx-2' onClick={handlelogout}>Logout</div>
                         </>
                         }
