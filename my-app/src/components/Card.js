@@ -59,7 +59,7 @@ export default function Card(props) {
                             )}
                         </select>
                         <div className='d-inline h-100 fs-4'>
-                             $/{finalPrice}-
+                             ₹/{finalPrice}-
                         </div>
                         <hr></hr>
                         <button

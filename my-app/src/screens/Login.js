@@ -37,12 +37,13 @@ export default function Login() {
       if (!json.success) {
         // Show server error or fallback
         if (json.error) {
-          alert(`❌ ${json.error}`);
+          alert(`${json.error}`);
         } else {
-          alert("❌ Login failed. Please check your credentials.");
+          alert("Login failed. Please check your credentials.");
         }
       } else {
-        alert("✅ Login successful!");
+        alert(" Login successful!");
+        localStorage.setItem("userEmail",credentials.email)
         localStorage.setItem("authToken",json.authToken)// Optionally redirect or save auth token
         localStorage.getItem("authToken");//debug
         navigate('/'); // redirect to home page
@@ -53,7 +54,7 @@ export default function Login() {
     } catch (err) {
       console.error("Login error:", err);
       
-      alert("❌ Server error. Please try again later.");
+      alert(" Server error. Please try again later.");
     }
   };
 

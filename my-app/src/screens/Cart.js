@@ -1,19 +1,19 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DeleteIcon from '@mui/icons-material/Delete'; // ✅ Correct icon import
+import DeleteIcon from '@mui/icons-material/Delete'; 
 import '../CSS/Cart.css';
 import { useCart, useDispatchCart } from '../components/ContextReducer';
 
 const CartPage = () => {
-  const data = useCart();
-  const dispatch = useDispatchCart();
+  let data = useCart();
+  let dispatch = useDispatchCart();
   const navigate = useNavigate();
 
   // Redirect if not logged in
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (!token) {
-      alert("❌ Please login to access your cart.");
+      alert(" Please login to access your cart.");
       navigate('/login');
     }
   }, [navigate]);
@@ -22,7 +22,7 @@ const CartPage = () => {
   const handleCheckOut = async () => {
     const userEmail = localStorage.getItem("userEmail");
 
-    const response = await fetch("http://localhost:5000/api/auth/orderData", {
+    const response = await fetch("http://localhost:5000/api/orderData", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -35,10 +35,10 @@ const CartPage = () => {
     });
 
     if (response.status === 200) {
-      dispatch({ type: "DROP" });
-      alert("✅ Order placed successfully!");
+      dispatch({ type: "CLEAR" });
+      alert(" Order placed successfully!");
     } else {
-      alert("❌ Failed to place order. Please try again.");
+      alert(" Failed to place order. Please try again.");
     }
   };
 
@@ -77,7 +77,7 @@ const CartPage = () => {
                 <td>{item.name}</td>
                 <td>{item.qty}</td>
                 <td>{item.size}</td>
-                <td>${item.price}</td>
+                <td> ₹{item.price}</td>
                 <td>
                   <button
                     className="btn p-0 text-danger"
@@ -90,7 +90,7 @@ const CartPage = () => {
             ))}
             <tr>
               <td colSpan="4" className="text-end fw-bold">Total:</td>
-              <td colSpan="2" className="fs-5">${totalPrice}</td>
+              <td colSpan="2" className="fs-5">₹{totalPrice}</td>
             </tr>
           </tbody>
         </table>
@@ -98,7 +98,7 @@ const CartPage = () => {
 
       <div className="text-center mt-4">
         <button className="btn btn-success px-4 py-2" onClick={handleCheckOut}>
-          ✅ Check Out
+           Check Out
         </button>
       </div>
     </div>
