@@ -100,7 +100,8 @@ export default function Home() {
       </div>
 
       {/* Food Display Section */}
-      <div className='container my-4'>
+      <div className='container my-4 bg-light p-3 rounded'>
+
         {
           foodCat.length > 0 ? (
             foodCat.map((category) => {

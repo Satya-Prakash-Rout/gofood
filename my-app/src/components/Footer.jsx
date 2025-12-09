@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="container">
         <div className="row justify-content-center text-center">
           <div className="col-auto">
-            <span className="text-muted">© 2021 Company, Inc</span>
+            <span className="text-muted">© 2025–Present GoFood. All rights reserved.</span>
           </div>
         </div>
       </div>

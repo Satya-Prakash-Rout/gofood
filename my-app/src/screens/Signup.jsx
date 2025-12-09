@@ -103,6 +103,8 @@ export default function Signup() {
 
                       {/* Name field */}
                       <div className="form-outline mb-4">
+                        <label className="form-label" htmlFor="name">Your Name</label>
+
                         <input
                           type="text"
                           name="name"
@@ -111,11 +113,12 @@ export default function Signup() {
                           id="name"
                           className="form-control form-control-lg"
                         />
-                        <label className="form-label" htmlFor="name">Your Name</label>
                       </div>
 
                       {/* Email field */}
                       <div className="form-outline mb-4">
+                        <label className="form-label" htmlFor="email">Your Email</label>
+
                         <input
                           type="email"
                           name="email"
@@ -124,11 +127,12 @@ export default function Signup() {
                           id="email"
                           className="form-control form-control-lg"
                         />
-                        <label className="form-label" htmlFor="email">Your Email</label>
                       </div>
 
                       {/* Location field */}
-                      <div className="form-outline mb-4">
+                      <div className="form-outline mb-4">                        <label className="form-label" htmlFor="location">Your Location</label>
+                        <label className="form-label" htmlFor="location">Your Location</label>
+
                         <input
                           type="text"
                           name="geolocation"
@@ -137,11 +141,12 @@ export default function Signup() {
                           id="location"
                           className="form-control form-control-lg"
                         />
-                        <label className="form-label" htmlFor="location">Your Location</label>
                       </div>
 
                       {/* Password field with eye toggle */}
                       <div className="form-outline mb-4 position-relative">
+                        <label className="form-label" htmlFor="password">Password</label>
+
                         <input
                           type={showPassword ? "text" : "password"}
                           name="password"
@@ -150,7 +155,6 @@ export default function Signup() {
                           id="password"
                           className="form-control form-control-lg"
                         />
-                        <label className="form-label" htmlFor="password">Password</label>
 
                         {/* Eye icon to toggle visibility */}
                         <span
@@ -170,6 +174,8 @@ export default function Signup() {
 
                       {/* Repeat Password field with eye toggle */}
                       <div className="form-outline mb-4 position-relative">
+                        <label className="form-label" htmlFor="repeatPassword">Repeat your password</label>
+
                         <input
                           type={showRepeatPassword ? "text" : "password"}
                           name="repeatPassword"
@@ -178,7 +184,6 @@ export default function Signup() {
                           id="repeatPassword"
                           className="form-control form-control-lg"
                         />
-                        <label className="form-label" htmlFor="repeatPassword">Repeat your password</label>
 
                         {/* Eye icon to toggle repeat password */}
                         <span

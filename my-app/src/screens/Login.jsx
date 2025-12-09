@@ -43,17 +43,17 @@ export default function Login() {
         }
       } else {
         alert(" Login successful!");
-        localStorage.setItem("userEmail",credentials.email)
-        localStorage.setItem("authToken",json.authToken)// Optionally redirect or save auth token
+        localStorage.setItem("userEmail", credentials.email)
+        localStorage.setItem("authToken", json.authToken)// Optionally redirect or save auth token
         localStorage.getItem("authToken");//debug
         navigate('/'); // redirect to home page
-     
-       
+
+
       }
 
     } catch (err) {
       console.error("Login error:", err);
-      
+
       alert(" Server error. Please try again later.");
     }
   };
@@ -82,6 +82,8 @@ export default function Login() {
 
                       {/* Email */}
                       <div className="form-outline mb-4">
+                        <label className="form-label" htmlFor="loginEmail">Your Email</label>
+
                         <input
                           type="email"
                           name="email"
@@ -90,11 +92,11 @@ export default function Login() {
                           id="loginEmail"
                           className="form-control form-control-lg"
                         />
-                        <label className="form-label" htmlFor="loginEmail">Your Email</label>
                       </div>
 
                       {/* Password */}
                       <div className="form-outline mb-4">
+                        <label className="form-label" htmlFor="loginPassword">Password</label>
                         <input
                           type="password"
                           name="password"
@@ -103,7 +105,6 @@ export default function Login() {
                           id="loginPassword"
                           className="form-control form-control-lg"
                         />
-                        <label className="form-label" htmlFor="loginPassword">Password</label>
                       </div>
 
                       {/* Submit button */}
