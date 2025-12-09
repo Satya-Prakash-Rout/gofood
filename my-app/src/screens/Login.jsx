@@ -2,25 +2,29 @@ import React, { useState } from 'react';
 import '../App.css';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-
+import '../CSS/Login.css';
 
 export default function Login() {
 
-  const navigate = useNavigate(); // for redirect
-  // Store login form input
+  const navigate = useNavigate();
+  const [loginType, setLoginType] = useState('user');
+
   const [credentials, setCredentials] = useState({
     email: '',
     password: ''
   });
 
-  //const [error, setError] = useState(""); // For validation or server error
-
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/api/loginuser', {
+      let endpoint = 'http://localhost:5000/api/loginuser';
+
+      if (loginType === 'admin') {
+        endpoint = 'http://localhost:5000/api/admin/login';
+      }
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -35,30 +39,31 @@ export default function Login() {
       console.log(json);
 
       if (!json.success) {
-        // Show server error or fallback
         if (json.error) {
           alert(`${json.error}`);
         } else {
           alert("Login failed. Please check your credentials.");
         }
       } else {
-        alert(" Login successful!");
-        localStorage.setItem("userEmail", credentials.email)
-        localStorage.setItem("authToken", json.authToken)// Optionally redirect or save auth token
-        localStorage.getItem("authToken");//debug
-        navigate('/'); // redirect to home page
-
-
+        alert(`${loginType.charAt(0).toUpperCase() + loginType.slice(1)} login successful!`);
+        
+        if (loginType === 'user') {
+          localStorage.setItem("userEmail", credentials.email);
+          localStorage.setItem("authToken", json.authToken);
+          navigate('/');
+        } else {
+          localStorage.setItem("adminToken", json.token);
+          localStorage.setItem("adminData", JSON.stringify(json.admin));
+          navigate('/admin/dashboard');
+        }
       }
 
     } catch (err) {
       console.error("Login error:", err);
-
-      alert(" Server error. Please try again later.");
+      alert("Server error. Please try again later.");
     }
   };
 
-  // Handle input changes
   const onChange = (event) => {
     const { name, value } = event.target;
     setCredentials(prev => ({ ...prev, [name]: value }));
@@ -74,16 +79,29 @@ export default function Login() {
           <div className="container h-100">
             <div className="row d-flex justify-content-center align-items-center h-100">
               <div className="col-12 col-md-9 col-lg-7 col-xl-6">
-                <div className="card" style={{ borderRadius: '15px' }}>
+                <div className="card login-card" style={{ borderRadius: '15px' }}>
                   <div className="card-body p-5">
-                    <h2 className="text-uppercase text-center mb-5">Login</h2>
+                    <h2 className="text-uppercase text-center mb-4">Login</h2>
+
+                    <div className="login-tabs mb-4">
+                      <button
+                        className={`tab-button ${loginType === 'user' ? 'active' : ''}`}
+                        onClick={() => setLoginType('user')}
+                      >
+                        👤 User Login
+                      </button>
+                      <button
+                        className={`tab-button ${loginType === 'admin' ? 'active' : ''}`}
+                        onClick={() => setLoginType('admin')}
+                      >
+                        🛡️ Admin Login
+                      </button>
+                    </div>
 
                     <form onSubmit={handleSubmit}>
 
-                      {/* Email */}
                       <div className="form-outline mb-4">
-                        <label className="form-label" htmlFor="loginEmail">Your Email</label>
-
+                        <label className="form-label" htmlFor="loginEmail">Email</label>
                         <input
                           type="email"
                           name="email"
@@ -91,10 +109,10 @@ export default function Login() {
                           onChange={onChange}
                           id="loginEmail"
                           className="form-control form-control-lg"
+                          required
                         />
                       </div>
 
-                      {/* Password */}
                       <div className="form-outline mb-4">
                         <label className="form-label" htmlFor="loginPassword">Password</label>
                         <input
@@ -104,24 +122,39 @@ export default function Login() {
                           onChange={onChange}
                           id="loginPassword"
                           className="form-control form-control-lg"
+                          required
                         />
                       </div>
 
-                      {/* Submit button */}
                       <div className="d-flex justify-content-center">
                         <button
                           type="submit"
                           className="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
                         >
-                          Login
+                          {loginType === 'user' ? 'Login as User' : 'Login as Admin'}
                         </button>
                       </div>
 
-                      {/* Signup link */}
-                      <p className="text-center text-muted mt-5 mb-0">
-                        Don’t have an account?{' '}
-                        <Link to="/createuser" className="fw-bold text-body"><u>Register here</u></Link>
-                      </p>
+                      {loginType === 'user' && (
+                        <p className="text-center text-muted mt-5 mb-0">
+                          Don't have an account?{' '}
+                          <Link to="/createuser" className="fw-bold text-body"><u>Register here</u></Link>
+                        </p>
+                      )}
+
+                      {loginType === 'admin' && (
+                        <p className="text-center text-muted mt-5 mb-0">
+                          Not an admin?{' '}
+                          <button
+                            type="button"
+                            className="btn-link text-success"
+                            onClick={() => setLoginType('user')}
+                            style={{ border: 'none', padding: '0', textDecoration: 'underline' }}
+                          >
+                            Switch to User Login
+                          </button>
+                        </p>
+                      )}
 
                     </form>
 

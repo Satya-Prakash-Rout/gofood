@@ -1,0 +1,96 @@
+/* Login Card Styling */
+.login-card {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.login-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Login Tabs */
+.login-tabs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  border-bottom: 2px solid #e9ecef;
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+}
+
+.tab-button:hover {
+  color: #198754;
+  border-bottom-color: #198754;
+}
+
+.tab-button.active {
+  color: #198754;
+  border-bottom-color: #198754;
+  font-weight: 700;
+}
+
+.tab-button:focus {
+  outline: none;
+}
+
+/* Form Styling */
+.form-outline input:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+.form-outline label {
+  font-weight: 600;
+  color: #495057;
+}
+
+/* Button styling */
+.btn-success {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
+}
+
+.btn-link {
+  color: #198754 !important;
+  text-decoration: underline !important;
+  cursor: pointer;
+}
+
+.btn-link:hover {
+  color: #145a32 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+  .login-tabs {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .tab-button {
+    padding: 10px 15px;
+    font-size: 13px;
+  }
+
+  .card-body {
+    padding: 2rem 1rem !important;
+  }
+}

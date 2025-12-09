@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Card from '../components/Card';
@@ -8,6 +10,7 @@ export default function Home() {
   const [foodCat, setFoodCat] = useState([]);
   const [foodItem, setFoodItem] = useState([]);
   const [carouselImages, setCarouselImages] = useState([]);
+  const location = useLocation();
 
   // Load food data and carousel images
   const loadData = async () => {
@@ -40,7 +43,29 @@ export default function Home() {
 
   useEffect(() => {
     loadData();
-  }, []);
+
+    // Initialize Socket.IO connection
+    const socket = io('http://localhost:5000', {
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: 5
+    });
+
+    // Listen for new food items added
+    socket.on('foodAdded', (data) => {
+      console.log('New food item added via Socket.IO:', data);
+      if (data.success && data.food) {
+        // Reload data when new item is added
+        loadData();
+      }
+    });
+
+    // Cleanup on unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, [location]);
 
   return (
     <>

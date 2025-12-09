@@ -1,9 +1,23 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 
 export default function MyOrder() {
     const [orderData, setOrderData] = useState([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Check if user is logged in
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            alert("Please login to view your orders.");
+            navigate('/login');
+            return;
+        }
+        
+        fetchMyOrder();
+    }, [navigate]);
 
     const fetchMyOrder = async () => {
         const email = localStorage.getItem('userEmail');
@@ -29,10 +43,6 @@ export default function MyOrder() {
             setOrderData([]);
         }
     };
-
-    useEffect(() => {
-        fetchMyOrder();
-    }, []);
 
     return (
         <div>

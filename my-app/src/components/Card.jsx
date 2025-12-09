@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatchCart, useCart } from "./ContextReducer";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Card(props) {
@@ -9,6 +10,7 @@ export default function Card(props) {
 
   let cart = useCart();
   let dispatch = useDispatchCart();
+  const navigate = useNavigate();
 
   const priceRef = useRef();
 
@@ -26,6 +28,22 @@ export default function Card(props) {
     (Number(qty) || 0) * (parseInt(options[size]) || 0);
 
   const handleAddToCart = async () => {
+    // Check if user is logged in
+    const authToken = localStorage.getItem("authToken");
+    
+    if (!authToken) {
+      toast.error("Please login to add items to cart", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      navigate("/login");
+      return;
+    }
+
     await dispatch({
       type: "ADD",
       id: props.foodItem._id,

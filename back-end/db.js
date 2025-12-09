@@ -1,7 +1,7 @@
 // db.js
 const mongoose = require('mongoose');
 
-const mongoURI = 'mongodb+srv://satyaprakashrout1117:satya1117@cluster0.u2avsxf.mongodb.net/gofoodmern?retryWrites=true&w=majority&appName=Cluster0';
+const mongoURI = 'mongodb+srv://satyaprakashrout1117:satya1117@cluster0.u2avsxf.mongodb.net/gofoodmern?appName=Cluster0';
 
 const mongoDB = async () => {
   try {
@@ -29,8 +29,12 @@ const mongoDB = async () => {
     console.log(global.foodCategory);
 
   } catch (error) {
-    console.error(" MongoDB connection failed:", error);
-    process.exit(1); // optionally exit for fatal DB issues
+    console.error(" MongoDB connection failed:", error.message);
+    console.warn(" Please check your internet connection or MongoDB credentials.");
+    
+    // Initialize empty arrays if connection fails
+    global.food_items = [];
+    global.foodCategory = [];
   } finally {
     // Close the DB connection only if it's open
 

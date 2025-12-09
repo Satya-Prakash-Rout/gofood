@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete'; 
 import '../CSS/Cart.css';
 import { useCart, useDispatchCart } from '../components/ContextReducer';
+import { toast } from 'react-toastify';
 
 const CartPage = () => {
   let data = useCart();
@@ -18,27 +19,91 @@ const CartPage = () => {
     }
   }, [navigate]);
 
+  // Get user's location
+  const getUserLocation = async () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error('Geolocation not supported'));
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          
+          // Get address from coordinates
+          try {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+            );
+            const addressData = await response.json();
+            
+            resolve({
+              latitude,
+              longitude,
+              address: addressData.address?.road || addressData.address?.city || 'Unknown',
+              city: addressData.address?.city || '',
+              state: addressData.address?.state || ''
+            });
+          } catch (error) {
+            resolve({
+              latitude,
+              longitude,
+              address: 'Address not available',
+              city: '',
+              state: ''
+            });
+          }
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  };
+
   // Checkout handler
   const handleCheckOut = async () => {
     const userEmail = localStorage.getItem("userEmail");
 
-    const response = await fetch("http://localhost:5000/api/orderData", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        order_data: data,
-        email: userEmail,
-        order_date: new Date().toDateString()
-      })
-    });
+    try {
+      // Get user's current location (silently in background)
+      let location = null;
+      try {
+        location = await getUserLocation();
+      } catch (locError) {
+        console.warn('Could not get location:', locError);
+      }
 
-    if (response.status === 200) {
-      dispatch({ type: "CLEAR" });
-      alert(" Order placed successfully!");
-    } else {
-      alert(" Failed to place order. Please try again.");
+      const response = await fetch("http://localhost:5000/api/orderData", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          order_data: data,
+          email: userEmail,
+          order_date: new Date().toDateString(),
+          location: location || {
+            latitude: null,
+            longitude: null,
+            address: 'Not provided',
+            city: '',
+            state: ''
+          }
+        })
+      });
+
+      if (response.status === 200) {
+        dispatch({ type: "CLEAR" });
+        toast.success("Order placed successfully! ✅");
+        navigate('/');
+      } else {
+        toast.error("Failed to place order. Please try again.");
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast.error("Error during checkout");
     }
   };
 
@@ -97,8 +162,11 @@ const CartPage = () => {
       </div>
 
       <div className="text-center mt-4">
-        <button className="btn btn-success px-4 py-2" onClick={handleCheckOut}>
-           Check Out
+        <button 
+          className="btn btn-success px-4 py-2" 
+          onClick={handleCheckOut}
+        >
+          ✓ Check Out
         </button>
       </div>
     </div>
