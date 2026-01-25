@@ -130,7 +130,7 @@ export default function Signup() {
                       </div>
 
                       {/* Location field */}
-                      <div className="form-outline mb-4">                        <label className="form-label" htmlFor="location">Your Location</label>
+                      <div className="form-outline mb-4">                       
                         <label className="form-label" htmlFor="location">Your Location</label>
 
                         <input

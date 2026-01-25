@@ -27,6 +27,7 @@ function App() {
           <Route path="/myorder" element={<MyOrder />} />
           <Route path="/addfood" element={<AddFood />} />
           <Route path="/admin/login" element={<AdminAuth />} />
+          <Route path="/admin/register" element={<AdminAuth initialMode="signup" />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Routes>
 

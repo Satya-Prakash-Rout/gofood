@@ -16,6 +16,11 @@ const OrderSchema = new Schema({
         type: String,
         default: new Date().toDateString()
     },
+    status: {
+        type: String,
+        enum: ['pending', 'preparing', 'delivery_ready', 'delivered', 'cancelled'],
+        default: 'pending'
+    },
     location: {
         latitude: {
             type: Number,
@@ -39,6 +44,10 @@ const OrderSchema = new Schema({
         }
     },
     createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
         type: Date,
         default: Date.now
     }

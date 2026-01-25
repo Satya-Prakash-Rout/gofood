@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import './AdminAuth.css';
 
-export default function AdminAuth() {
+export default function AdminAuth({ initialMode = 'login' }) {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(initialMode === 'login');
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',

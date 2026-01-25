@@ -1,23 +1,24 @@
 // index.js
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 const mongoDB = require('./db');
 const cors = require('cors');
 const path = require('path');
 const http = require('http');
 const socketIO = require('socket.io');
 
+// Import middleware
+const { errorHandler, notFoundHandler, requestLogger } = require('./middleware/errorHandler');
+const { apiLimiter, loginLimiter, sanitizeData, getCorsOptions, securityHeaders } = require('./middleware/security');
+
 // Create HTTP server
 const server = http.createServer(app);
 
 // Initialize Socket.IO with CORS
 const io = socketIO(server, {
-  cors: {
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
-    methods: ['GET', 'POST'],
-    credentials: true
-  }
+  cors: getCorsOptions()
 });
 
 // Make io accessible to routes
@@ -26,58 +27,54 @@ app.io = io;
 // Connect to MongoDB
 mongoDB();
 
-const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:3001'],
-  methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-};
+// Apply CORS
+app.use(cors(getCorsOptions()));
 
-app.use(cors(corsOptions));
+// Apply security headers
+app.use(securityHeaders);
+
+// Request logging
+app.use(requestLogger);
 
 // Middleware to parse JSON and form data
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Data sanitization
+app.use(sanitizeData);
 
 // Serve static files for uploaded images
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Health check route
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Apply rate limiting to API routes
+app.use('/api/', apiLimiter);
+
 // Routes
-app.use('/api', require('./Routes/CreateUser'));//app.use('/api/', ...): Tells Express to use the routes defined in CreateUser.js whenever a request starts with /api/.
-
-app.use('/api', require('./Routes/LoginUser')); //for login
-
-app.use('/api', require('./Routes/DisplayData')); // display data
-
+app.use('/api', require('./Routes/CreateUser'));
+app.use('/api', require('./Routes/LoginUser'));
+app.use('/api', require('./Routes/DisplayData'));
 app.use('/api', require('./Routes/OrderData'));
-
-app.use('/api', require('./Routes/AddFood')); // add food items
-
-app.use('/api', require('./Routes/AdminAuth')); // admin authentication
-
-app.use('/api', require('./Routes/AdminOrders')); // admin orders with location data
-
+app.use('/api', require('./Routes/AddFood'));
+app.use('/api', require('./Routes/AdminAuth'));
+app.use('/api', require('./Routes/AdminOrders'));
 
 // Root Route
 app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Server error:', err);
-  res.status(500).json({ 
-    error: 'Server error',
-    message: err.message,
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  res.json({ 
+    message: 'Welcome to GoFood API',
+    version: '1.0.0',
+    endpoints: '/api/*'
   });
 });
 
-// 404 handler
-app.use((req, res) => {
-  console.warn('Route not found:', req.method, req.path);
-  res.status(404).json({ error: 'Route not found' });
-});
+// Error handling middleware (must be last)
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {
@@ -88,8 +85,18 @@ io.on('connection', (socket) => {
   });
 });
 
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully...');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
+
 // Start Server using HTTP server instead of Express
 server.listen(port, () => {
   console.log(`Server listening on port ${port}`);
+  console.log(`Environment: ${process.env.NODE_ENV}`);
   console.log(`Socket.IO server ready for connections`);
 });

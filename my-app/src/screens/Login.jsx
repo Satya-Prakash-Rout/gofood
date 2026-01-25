@@ -7,7 +7,6 @@ import '../CSS/Login.css';
 export default function Login() {
 
   const navigate = useNavigate();
-  const [loginType, setLoginType] = useState('user');
 
   const [credentials, setCredentials] = useState({
     email: '',
@@ -18,11 +17,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      let endpoint = 'http://localhost:5000/api/loginuser';
-
-      if (loginType === 'admin') {
-        endpoint = 'http://localhost:5000/api/admin/login';
-      }
+      const endpoint = 'http://localhost:5000/api/loginuser';
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -37,7 +32,6 @@ export default function Login() {
 
       const json = await response.json();
       console.log(json);
-
       if (!json.success) {
         if (json.error) {
           alert(`${json.error}`);
@@ -45,19 +39,11 @@ export default function Login() {
           alert("Login failed. Please check your credentials.");
         }
       } else {
-        alert(`${loginType.charAt(0).toUpperCase() + loginType.slice(1)} login successful!`);
-        
-        if (loginType === 'user') {
-          localStorage.setItem("userEmail", credentials.email);
-          localStorage.setItem("authToken", json.authToken);
-          navigate('/');
-        } else {
-          localStorage.setItem("adminToken", json.token);
-          localStorage.setItem("adminData", JSON.stringify(json.admin));
-          navigate('/admin/dashboard');
-        }
+        alert('User login successful!');
+        localStorage.setItem("userEmail", credentials.email);
+        localStorage.setItem("authToken", json.authToken);
+        navigate('/');
       }
-
     } catch (err) {
       console.error("Login error:", err);
       alert("Server error. Please try again later.");
@@ -82,21 +68,6 @@ export default function Login() {
                 <div className="card login-card" style={{ borderRadius: '15px' }}>
                   <div className="card-body p-5">
                     <h2 className="text-uppercase text-center mb-4">Login</h2>
-
-                    <div className="login-tabs mb-4">
-                      <button
-                        className={`tab-button ${loginType === 'user' ? 'active' : ''}`}
-                        onClick={() => setLoginType('user')}
-                      >
-                        👤 User Login
-                      </button>
-                      <button
-                        className={`tab-button ${loginType === 'admin' ? 'active' : ''}`}
-                        onClick={() => setLoginType('admin')}
-                      >
-                        🛡️ Admin Login
-                      </button>
-                    </div>
 
                     <form onSubmit={handleSubmit}>
 
@@ -131,30 +102,24 @@ export default function Login() {
                           type="submit"
                           className="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
                         >
-                          {loginType === 'user' ? 'Login as User' : 'Login as Admin'}
+                          Login as User
                         </button>
                       </div>
 
-                      {loginType === 'user' && (
-                        <p className="text-center text-muted mt-5 mb-0">
-                          Don't have an account?{' '}
-                          <Link to="/createuser" className="fw-bold text-body"><u>Register here</u></Link>
-                        </p>
-                      )}
+                      <p className="text-center text-muted mt-5 mb-0">
+                        Don't have an account?{' '}
+                        <Link to="/createuser" className="fw-bold text-body"><u>Register here</u></Link>
+                      </p>
 
-                      {loginType === 'admin' && (
-                        <p className="text-center text-muted mt-5 mb-0">
-                          Not an admin?{' '}
-                          <button
-                            type="button"
-                            className="btn-link text-success"
-                            onClick={() => setLoginType('user')}
-                            style={{ border: 'none', padding: '0', textDecoration: 'underline' }}
-                          >
-                            Switch to User Login
-                          </button>
-                        </p>
-                      )}
+                      <div className="d-flex justify-content-center mt-4">
+                        <button
+                          type="button"
+                          className="btn btn-info btn-lg"
+                          onClick={() => navigate('/admin/login')}
+                        >
+                          🛡️ Admin Login
+                        </button>
+                      </div>
 
                     </form>
 
