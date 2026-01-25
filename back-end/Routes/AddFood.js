@@ -5,14 +5,12 @@ const Food = require('../models/Food');
 
 // Add food endpoint
 router.post('/addfood', async (req, res) => {
-  console.log('=== POST /addfood called ===');
-  console.log('Headers:', req.headers);
-  console.log('Raw body:', req.body);
+  
 
   try {
     const { name, CategoryName, description, halfPrice, fullPrice, imgUrl } = req.body;
 
-    console.log('Received form data:', { name, CategoryName, description, halfPrice, fullPrice, imgUrl });
+    
 
       // Validation
       if (!name || !CategoryName || !halfPrice || !fullPrice || !imgUrl) {
@@ -56,7 +54,7 @@ router.post('/addfood', async (req, res) => {
       const result = await db.collection("food_items").insertOne(foodData);
       
       console.log('Food added successfully to MongoDB:', foodData);
-      console.log('Inserted ID:', result.insertedId);
+      
 
       // Update global array to reflect the change
       foodData._id = result.insertedId;
@@ -72,7 +70,7 @@ router.post('/addfood', async (req, res) => {
           success: true,
           food: foodData
         });
-        console.log('Socket.IO event emitted: foodAdded');
+        
       }
 
       res.status(201).json({

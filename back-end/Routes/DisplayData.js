@@ -14,7 +14,7 @@ router.post('/foodData', async (req, res) => {
     global.food_items = foodItems;
     global.foodCategory = foodCategories;
 
-    console.log(`Serving ${foodItems.length} food items and ${foodCategories.length} categories`);
+    
     
     res.status(200).json([foodItems, foodCategories]);
 

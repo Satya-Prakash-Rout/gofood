@@ -37,7 +37,7 @@ router.post(
       // Check if a user exists with the given email
       const user = await User.findOne({ email });
 
-      console.log("User found:", user); // Debug log
+      
 
       // If no user is found, return error
       if (!user) {

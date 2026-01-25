@@ -23,10 +23,10 @@ const mongoDB = async () => {
       .toArray(); 
 
     global.food_items = fetched_data;
-    console.log(global.food_items);
+    
     
     global.foodCategory = catData;
-    console.log(global.foodCategory);
+    
 
   } catch (error) {
     console.error(" MongoDB connection failed:", error.message);

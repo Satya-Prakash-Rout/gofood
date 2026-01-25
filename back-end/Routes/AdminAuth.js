@@ -12,7 +12,7 @@ router.post('/admin/signup', async (req, res) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
 
-    console.log('Admin signup attempt:', { name, email });
+    
 
     // Validation
     if (!name || !email || !password || !confirmPassword) {
