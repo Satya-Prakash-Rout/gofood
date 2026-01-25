@@ -1,11 +1,11 @@
 // db.js
 const mongoose = require('mongoose');
 
-const mongoURI = 'mongodb+srv://satyaprakashrout1117:satya1117@cluster0.u2avsxf.mongodb.net/gofoodmern?appName=Cluster0';
+
 
 const mongoDB = async () => {
   try {
-    await mongoose.connect(mongoURI, {
+    await mongoose.connect(env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

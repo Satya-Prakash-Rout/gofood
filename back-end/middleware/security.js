@@ -1,6 +1,26 @@
 // middleware/security.js
 const rateLimit = require('express-rate-limit');
-const mongoSanitize = require('mongo-sanitize');
+
+// Simple sanitization function to remove $ and . from keys (NoSQL injection prevention)
+const sanitizeObject = (obj) => {
+  if (typeof obj !== 'object' || obj === null) {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(item => sanitizeObject(item));
+  }
+
+  const sanitized = {};
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      // Remove $ and . from keys to prevent NoSQL injection
+      const sanitizedKey = key.replace(/[\$\.]/g, '');
+      sanitized[sanitizedKey] = sanitizeObject(obj[key]);
+    }
+  }
+  return sanitized;
+};
 
 // Rate limiting middleware
 const createRateLimiter = (windowMs = 900000, maxRequests = 100) => {
@@ -32,13 +52,13 @@ const apiLimiter = createRateLimiter(900000, 100); // 100 requests per 15 minute
 // Data sanitization middleware
 const sanitizeData = (req, res, next) => {
   if (req.body) {
-    req.body = mongoSanitize(req.body);
+    req.body = sanitizeObject(req.body);
   }
   if (req.params) {
-    req.params = mongoSanitize(req.params);
+    req.params = sanitizeObject(req.params);
   }
   if (req.query) {
-    req.query = mongoSanitize(req.query);
+    req.query = sanitizeObject(req.query);
   }
   next();
 };
