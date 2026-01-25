@@ -65,7 +65,7 @@ export default function AddFood() {
 
     try {
       // Send as JSON instead of FormData
-      const response = await fetch('http://localhost:5000/api/addfood', {
+      const response = await fetch('process.env.REACT_APP_API_URL/api/addfood', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

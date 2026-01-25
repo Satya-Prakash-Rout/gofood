@@ -61,7 +61,7 @@ export default function AdminDashboard() {
 
   const loadFoodItems = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/foodData', {
+      const response = await fetch('process.env.REACT_APP_API_URL/api/foodData', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -87,7 +87,7 @@ export default function AdminDashboard() {
   const loadOrders = useCallback(async () => {
     setOrdersLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/admin/allOrders', {
+      const response = await fetch('process.env.REACT_APP_API_URL/api/admin/allOrders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ export default function AdminDashboard() {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/addfood', {
+      const response = await fetch('process.env.REACT_APP_API_URL/api/addfood', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -186,7 +186,7 @@ export default function AdminDashboard() {
   const handleDeleteFood = async (id) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
       try {
-        const response = await fetch(`http://localhost:5000/api/deletefood/${id}`, {
+        const response = await fetch(`process.env.REACT_APP_API_URL/api/deletefood/${id}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`

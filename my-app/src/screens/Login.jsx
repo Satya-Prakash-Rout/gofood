@@ -17,7 +17,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const endpoint = 'http://localhost:5000/api/loginuser';
+      const endpoint = 'process.env.REACT_APP_API_URL/api/loginuser';
 
       const response = await fetch(endpoint, {
         method: 'POST',

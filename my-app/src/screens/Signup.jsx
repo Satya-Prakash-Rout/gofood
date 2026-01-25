@@ -52,7 +52,7 @@ export default function Signup() {
 
 
     // Send data to backend
-    const response = await fetch('http://localhost:5000/api/createuser', {
+    const response = await fetch('process.env.REACT_APP_API_URL/api/createuser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json' // Set headers to JSON
