@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../App.css';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 
 export default function Signup() {
@@ -52,7 +53,7 @@ export default function Signup() {
 
 
     // Send data to backend
-    const response = await fetch('process.env.REACT_APP_API_URL/api/createuser', {
+    const response = await fetch(`${API_BASE_URL}/api/createuser`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json' // Set headers to JSON

@@ -65,7 +65,10 @@ const sanitizeData = (req, res, next) => {
 
 // CORS configuration
 const getCorsOptions = () => {
-  const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:3000';
+  // Default dev origins (React dev server commonly uses 3000 or 3001)
+  const corsOrigin =
+    process.env.CORS_ORIGIN ||
+    'http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,http://127.0.0.1:3001';
   
   return {
     origin: corsOrigin.split(',').map(url => url.trim()),

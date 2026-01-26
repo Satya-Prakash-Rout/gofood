@@ -5,13 +5,19 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Admin = require('../models/Admin');
 
-const JWT_SECRET = 'your_jwt_secret_key_change_this_in_production';
+const JWT_SECRET =
+  process.env.JWT_SECRET ||
+  (process.env.NODE_ENV === 'production' ? null : 'dev_jwt_secret_change_me');
+const jwtExpiresIn = process.env.JWT_EXPIRE || '7d';
 
 // Admin Signup
 router.post('/admin/signup', async (req, res) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
 
+    if (!JWT_SECRET) {
+      return res.status(500).json({ error: 'Server misconfigured: JWT_SECRET missing' });
+    }
     
 
     // Validation
@@ -60,7 +66,7 @@ router.post('/admin/signup', async (req, res) => {
     const token = jwt.sign(
       { id: result.insertedId, email: adminData.email },
       JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: jwtExpiresIn }
     );
 
     res.status(201).json({
@@ -84,6 +90,10 @@ router.post('/admin/signup', async (req, res) => {
 router.post('/admin/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!JWT_SECRET) {
+      return res.status(500).json({ error: 'Server misconfigured: JWT_SECRET missing' });
+    }
 
     console.log('Admin login attempt:', { email });
 
@@ -122,7 +132,7 @@ router.post('/admin/login', async (req, res) => {
     const token = jwt.sign(
       { id: admin._id, email: admin.email },
       JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: jwtExpiresIn }
     );
 
     res.status(200).json({
@@ -145,6 +155,10 @@ router.post('/admin/login', async (req, res) => {
 // Verify Admin Token
 router.post('/admin/verify', async (req, res) => {
   try {
+    if (!JWT_SECRET) {
+      return res.status(500).json({ error: 'Server misconfigured: JWT_SECRET missing' });
+    }
+
     const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {

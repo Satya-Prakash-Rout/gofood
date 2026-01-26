@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import '../CSS/AddFood.css';
+import { API_BASE_URL } from '../config';
 
 export default function AddFood() {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ export default function AddFood() {
 
     try {
       // Send as JSON instead of FormData
-      const response = await fetch('process.env.REACT_APP_API_URL/api/addfood', {
+      const response = await fetch(`${API_BASE_URL}/api/addfood`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

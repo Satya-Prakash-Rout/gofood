@@ -4,6 +4,7 @@ import { io } from 'socket.io-client';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Card from '../components/Card';
+import { API_BASE_URL, SOCKET_URL } from '../config';
 
 export default function Home() {
   const [search, setSearch] = useState('');
@@ -15,7 +16,7 @@ export default function Home() {
   // Load food data and carousel images
   const loadData = async () => {
     try {
-      const foodRes = await fetch("http://localhost:5000/api/foodData", {
+      const foodRes = await fetch(`${API_BASE_URL}/api/foodData`, {
         method: "POST",
         headers: {
           "Content-Type": 'application/json'
@@ -45,7 +46,7 @@ export default function Home() {
     loadData();
 
     // Initialize Socket.IO connection
-    const socket = io('process.env.REACT_APP_API_URL', {
+    const socket = io(SOCKET_URL, {
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,

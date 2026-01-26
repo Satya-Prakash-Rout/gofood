@@ -24,8 +24,10 @@ const io = socketIO(server, {
 // Make io accessible to routes
 app.io = io;
 
-// Connect to MongoDB
-mongoDB();
+// Trust reverse proxy (Render/Heroku/Nginx) for correct IPs, rate limiting, secure cookies
+if (process.env.TRUST_PROXY === 'true' || process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 
 // Apply CORS
 app.use(cors(getCorsOptions()));
@@ -94,9 +96,29 @@ process.on('SIGTERM', () => {
   });
 });
 
-// Start Server using HTTP server instead of Express
-server.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
-  console.log(`Socket.IO server ready for connections`);
+// Handle server listen errors (e.g. port already in use)
+server.on('error', (err) => {
+  if (err && err.code === 'EADDRINUSE') {
+    console.error(`Port ${port} is already in use. Stop the other process or set a different PORT.`);
+    process.exit(1);
+  }
+  console.error('Server error:', err);
+  process.exit(1);
+});
+
+async function startServer() {
+  // Connect to MongoDB before accepting requests (fails fast in production)
+  await mongoDB();
+
+  // Start Server using HTTP server instead of Express
+  server.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+    console.log(`Environment: ${process.env.NODE_ENV}`);
+    console.log(`Socket.IO server ready for connections`);
+  });
+}
+
+startServer().catch((err) => {
+  console.error('Failed to start server:', err);
+  process.exit(1);
 });

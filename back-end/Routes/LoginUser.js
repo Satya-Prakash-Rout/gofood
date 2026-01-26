@@ -5,10 +5,13 @@ const User = require('../models/User'); // Mongoose User model
 
 const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // Secret key used to sign JWT tokens (use environment variable in production)
-const jwtSecret = "satyaprakshroutsafyufgijhjggshj";
+const jwtSecret =
+  process.env.JWT_SECRET ||
+  (process.env.NODE_ENV === 'production' ? null : 'dev_jwt_secret_change_me');
+const jwtExpiresIn = process.env.JWT_EXPIRE || '1h';
 
 // POST /api/loginuser
 router.post(
@@ -21,13 +24,17 @@ router.post(
     body('password').notEmpty().withMessage('Password is required')
   ],
   async (req, res) => {
-    // For debugging - prints the request body in the terminal
-    console.log("Login request body:", req.body);
-
     // Collect validation errors from express-validator
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
+    if (!jwtSecret) {
+      return res.status(500).json({
+        success: false,
+        error: 'Server misconfigured: JWT_SECRET missing'
+      });
     }
 
     // Extract email and password from request
@@ -60,7 +67,7 @@ router.post(
       };
 
       // Sign the JWT with the payload and secret key
-      const authToken = jwt.sign(data, jwtSecret, { expiresIn: '1h' });
+      const authToken = jwt.sign(data, jwtSecret, { expiresIn: jwtExpiresIn });
 
       // Return success and the token
       return res.json({ success: true, authToken });

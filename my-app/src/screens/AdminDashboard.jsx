@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './AdminDashboard.css';
+import { API_BASE_URL } from '../config';
 
 // Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -61,7 +62,7 @@ export default function AdminDashboard() {
 
   const loadFoodItems = async () => {
     try {
-      const response = await fetch('process.env.REACT_APP_API_URL/api/foodData', {
+      const response = await fetch(`${API_BASE_URL}/api/foodData`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -87,7 +88,7 @@ export default function AdminDashboard() {
   const loadOrders = useCallback(async () => {
     setOrdersLoading(true);
     try {
-      const response = await fetch('process.env.REACT_APP_API_URL/api/admin/allOrders', {
+      const response = await fetch(`${API_BASE_URL}/api/admin/allOrders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -144,7 +145,7 @@ export default function AdminDashboard() {
         return;
       }
 
-      const response = await fetch('process.env.REACT_APP_API_URL/api/addfood', {
+      const response = await fetch(`${API_BASE_URL}/api/addfood`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -186,7 +187,7 @@ export default function AdminDashboard() {
   const handleDeleteFood = async (id) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
       try {
-        const response = await fetch(`process.env.REACT_APP_API_URL/api/deletefood/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/deletefood/${id}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`

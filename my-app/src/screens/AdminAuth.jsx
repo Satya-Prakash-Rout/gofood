@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import './AdminAuth.css';
+import { API_BASE_URL } from '../config';
 
 export default function AdminAuth({ initialMode = 'login' }) {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ export default function AdminAuth({ initialMode = 'login' }) {
         }
       }
 
-      const response = await fetch(`process.env.REACT_APP_API_URL${endpoint}`, {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

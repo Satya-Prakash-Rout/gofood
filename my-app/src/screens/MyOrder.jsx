@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
+import { API_BASE_URL } from '../config';
 
 export default function MyOrder() {
     const [orderData, setOrderData] = useState([]);
@@ -23,7 +24,7 @@ export default function MyOrder() {
         const email = localStorage.getItem('userEmail');
 
         try {
-            const res = await fetch("process.env.REACT_APP_API_URL/api/myOrderData", {
+            const res = await fetch(`${API_BASE_URL}/api/myOrderData`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

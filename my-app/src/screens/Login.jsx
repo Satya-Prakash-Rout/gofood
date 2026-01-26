@@ -3,6 +3,7 @@ import '../App.css';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import '../CSS/Login.css';
+import { API_BASE_URL } from '../config';
 
 export default function Login() {
 
@@ -17,7 +18,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const endpoint = 'process.env.REACT_APP_API_URL/api/loginuser';
+      const endpoint = `${API_BASE_URL}/api/loginuser`;
 
       const response = await fetch(endpoint, {
         method: 'POST',

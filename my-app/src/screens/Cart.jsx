@@ -4,6 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import '../CSS/Cart.css';
 import { useCart, useDispatchCart } from '../components/ContextReducer';
 import { toast } from 'react-toastify';
+import { API_BASE_URL } from '../config';
 
 const CartPage = () => {
   let data = useCart();
@@ -75,7 +76,7 @@ const CartPage = () => {
         console.warn('Could not get location:', locError);
       }
 
-      const response = await fetch("process.env.REACT_APP_API_URL/api/orderData", {
+      const response = await fetch(`${API_BASE_URL}/api/orderData`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
