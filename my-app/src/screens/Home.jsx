@@ -12,7 +12,8 @@ export default function Home() {
   const [foodItem, setFoodItem] = useState([]);
   const [carouselImages, setCarouselImages] = useState([]);
   const location = useLocation();
-
+   
+  
   // Load food data and carousel images
   const loadData = async () => {
     try {
