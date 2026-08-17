@@ -68,7 +68,7 @@ const getCorsOptions = () => {
   // Default dev origins (React dev server commonly uses 3000 or 3001)
   const corsOrigin =
     process.env.CORS_ORIGIN ||
-    'https://gofood-git-main-satya-prakash-routs-projects.vercel.app/'||'https://gofood-92co85ieh-satya-prakash-routs-projects.vercel.app/'||'https://gofood-rose-pi.vercel.app/';
+    'https://gofood-git-main-satya-prakash-routs-projects.vercel.app/'||'https://gofood-92co85ieh-satya-prakash-routs-projects.vercel.app/'||'https://gofood-rose-pi.vercel.app/'||;
   
   return {
     origin: corsOrigin.split(',').map(url => url.trim()),
