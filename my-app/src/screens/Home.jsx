@@ -26,8 +26,17 @@ export default function Home() {
       if (!foodRes.ok) throw new Error(`HTTP error! status: ${foodRes.status}`);
 
       const data = await foodRes.json();
-      setFoodItem(data[0]);
-      setFoodCat(data[1]);
+      const normalizedFoodItems = Array.isArray(data[0]) ? data[0] : [];
+      const normalizedCategories = Array.isArray(data[1]) && data[1].length > 0
+        ? data[1]
+        : [...new Set(
+            normalizedFoodItems
+              .filter(item => item.CategoryName)
+              .map(item => item.CategoryName.trim())
+          )].map((CategoryName, index) => ({ _id: `fallback-${index}`, CategoryName }));
+
+      setFoodItem(normalizedFoodItems);
+      setFoodCat(normalizedCategories);
 
       // Fetch 3 dynamic food images from Foodish API
       const imagePromises = Array.from({ length: 3 }, () =>

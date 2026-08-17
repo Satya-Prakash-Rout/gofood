@@ -21,21 +21,31 @@ const mongoDB = async () => {
 
     console.log(" MongoDB connected");
 
-    // Replace with your actual collection name
     const fetched_data = await mongoose.connection.db
       .collection("food_items")
       .find({})
       .toArray();
-     const catData = await mongoose.connection.db
+
+    let catData = await mongoose.connection.db
       .collection("foodcategory")
       .find({})
-      .toArray(); 
+      .toArray();
+
+    if ((!catData || catData.length === 0) && fetched_data.length > 0) {
+      const uniqueCategories = [...new Set(
+        fetched_data
+          .filter(item => item.CategoryName)
+          .map(item => item.CategoryName.trim())
+      )];
+
+      catData = uniqueCategories.map((CategoryName, index) => ({
+        _id: `fallback-${index}`,
+        CategoryName
+      }));
+    }
 
     global.food_items = fetched_data;
-    
-    
     global.foodCategory = catData;
-    
 
   } catch (error) {
     console.error(" MongoDB connection failed:", error.message);
