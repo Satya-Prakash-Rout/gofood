@@ -38,13 +38,29 @@ export default function Home() {
       setFoodItem(normalizedFoodItems);
       setFoodCat(normalizedCategories);
 
-      // Fetch 3 dynamic food images from Foodish API
+      // Fetch 3 dynamic food images from Foodish API (use a reliable endpoint and fall back to static images)
       const imagePromises = Array.from({ length: 3 }, () =>
-        fetch("https://foodish-api.com/api/").then(res => res.json())
+        fetch("https://foodish-api.herokuapp.com/api/").then(res => {
+          if (!res.ok) throw new Error(`Image fetch failed: ${res.status}`);
+          return res.json();
+        })
       );
 
-      const images = await Promise.all(imagePromises);
-      setCarouselImages(images.map(img => img.image));
+      let images = [];
+      try {
+        const results = await Promise.all(imagePromises);
+        images = results.map(img => img.image).filter(Boolean);
+      } catch (imgErr) {
+        console.error("Failed to fetch carousel images, using fallback images:", imgErr);
+        // Fallback images (Unsplash) to ensure the carousel still shows visuals
+        images = [
+          "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=1200&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1651440204296-a79fa9988007?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        ];
+      }
+
+      setCarouselImages(images);
 
     } catch (error) {
       console.error("Failed to load data:", error);
